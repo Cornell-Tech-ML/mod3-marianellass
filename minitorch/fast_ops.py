@@ -171,19 +171,19 @@ def tensor_map(
         if np.array_equal(in_shape, out_shape) and np.array_equal(
             in_strides, out_strides
         ):
-            # if strides and shape are equal, apply func
             for i in prange(len(out)):
                 out[i] = fn(in_storage[i])
-            else:
-                # if strides and shape are not equal, apply func with index
-                for i in prange(len(out)):
-                    out_index = np.empty(MAX_DIMS, np.int32)
-                    in_index = np.empty(MAX_DIMS, np.int32)
+        else:
+            for i in prange(len(out)):
+                out_index = np.empty(MAX_DIMS, np.int32)
+                in_index = np.empty(MAX_DIMS, np.int32)
 
-                    to_index(i, out_shape, out_index)
-                    broadcast_index(out_index, out_shape, in_shape, in_index)
-                    j = index_to_position(in_index, in_strides)
-                    out[i] = fn(in_storage[j])
+                to_index(i, out_shape, out_index)
+                broadcast_index(out_index, out_shape, in_shape, in_index)
+                ii = index_to_position(out_index, out_strides)
+                
+                j = int(index_to_position(in_index, in_strides))
+                out[ii] = fn(in_storage[j])
 
     return njit(_map, parallel=True)  # type: ignore
 
@@ -246,7 +246,7 @@ def tensor_zip(
                     a_storage[index_to_position(a_index, a_strides)],
                     b_storage[index_to_position(b_index, b_strides)],
                 )
-
+                               
     return njit(_zip, parallel=True)  # type: ignore
 
 
@@ -280,20 +280,24 @@ def tensor_reduce(
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
+        
         reduce_size = a_shape[reduce_dim]
-        reduce_stride = a_strides[reduce_dim]
-
+        #reduce_stride = a_strides[reduce_dim]
+        
         for i in prange(len(out)):
             out_idx = np.empty(MAX_DIMS, np.int32)
-
+            
             to_index(i, out_shape, out_idx)
             out_position = index_to_position(out_idx, out_strides)
-            temp = out[out_position]
-            a_position = index_to_position(out_idx, a_strides)
+            temp= out[out_position]
 
-            for s in reduce_size:
-                temp = fn(temp, a_storage[a_position])
-                a_position += reduce_stride
+            for s in range(reduce_size):
+                j = 0
+                out_idx[reduce_dim] = s
+                
+                for x, stride in zip(out_idx, a_strides):
+                    j += x*stride
+                temp = fn(temp, a_storage[j])
             out[out_position] = temp
 
     return njit(_reduce, parallel=True)  # type: ignore

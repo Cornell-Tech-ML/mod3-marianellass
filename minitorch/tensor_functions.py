@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -84,10 +84,8 @@ class Inv(Function):
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
-        """Return the negative of the gradient"""
-        (t1,) = ctx.saved_values  # Retrieve t1
-        grad_input = grad_output.f.inv_back_zip(t1, grad_output)
-        return grad_input
+        (t1,) = ctx.saved_values
+        return grad_output.f.inv_back_zip(t1, grad_output)
 
 
 class Add(Function):
@@ -104,7 +102,7 @@ class Add(Function):
 
 class All(Function):
     @staticmethod
-    def forward(ctx: Context, a: Tensor, dim: Optional[Tensor] = None) -> Tensor:
+    def forward(ctx: Context, a: Tensor, dim: Tensor) -> Tensor:
         """Return 1 if all are true"""
         if dim is not None:
             return a.f.mul_reduce(a, int(dim.item()))
