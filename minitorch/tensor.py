@@ -327,10 +327,10 @@ class Tensor:
 
     def all(self, dim: Optional[Union[int, Tensor]] = None) -> Tensor:
         """Checks if all elements are True."""
-        if dim is not None:
-            return All.apply(self, self._ensure_tensor(dim))
+        if dim is None:
+            return All.apply(self.view(self.size), self._ensure_tensor(0))
         else:
-            return All.apply(self)
+            return All.apply(self, self._ensure_tensor(dim))
 
     def is_close(self, b: TensorLike) -> Tensor:
         """Checks if this tensor is close to another."""
