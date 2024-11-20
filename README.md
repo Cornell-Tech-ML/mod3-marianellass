@@ -304,7 +304,8 @@ def _tensor_matrix_multiply(                                       |
                                                                    | 
                 out[n * out_strides[0] +                           | 
                     i * out_strides[1] +                           | 
-                    j * out_strides[2]] = info                     | 
+                    j * out_strides[2]] = info                     |
+
 --------------------------------- Fusing loops ---------------------------------
 Attempting fusion of parallel loops (combines loops with similar properties)...
 Following the attempted fusion of parallel for-loops there are 1 parallel for-
@@ -325,54 +326,168 @@ None
 
 ### 3.5: Training loss, accuracy and timing 
 
+## Smaller Models
+#### backend: cpu, dataset: simple, hidden: 100, rate: 0.05, points: 50
+
+#### backend: gpu, dataset: simple, hidden: 100, rate: 0.05, points: 50
+Epoch 0 - Loss: 5.1630 - Correct: 33 (Time: 5.0502 sec)
+Epoch 10 - Loss: 1.5289 - Correct: 47 (Time: 1.6491 sec)
+Epoch 20 - Loss: 1.6041 - Correct: 48 (Time: 1.6135 sec)
+Epoch 30 - Loss: 0.4352 - Correct: 49 (Time: 1.6387 sec)
+Epoch 40 - Loss: 0.9476 - Correct: 49 (Time: 1.6508 sec)
+Epoch 50 - Loss: 0.4971 - Correct: 48 (Time: 1.8622 sec)
+Epoch 60 - Loss: 0.4816 - Correct: 50 (Time: 1.6786 sec)
+Epoch 70 - Loss: 1.7575 - Correct: 49 (Time: 2.2845 sec)
+Epoch 80 - Loss: 0.2867 - Correct: 48 (Time: 1.6993 sec)
+Epoch 90 - Loss: 0.7067 - Correct: 50 (Time: 1.7113 sec)
+Epoch 100 - Loss: 0.4553 - Correct: 50 (Time: 1.6637 sec)
+Epoch 110 - Loss: 0.1658 - Correct: 50 (Time: 1.6542 sec)
+Epoch 120 - Loss: 1.5162 - Correct: 49 (Time: 1.8100 sec)
+Epoch 130 - Loss: 0.9418 - Correct: 50 (Time: 1.6329 sec)
+Epoch 140 - Loss: 0.1023 - Correct: 48 (Time: 2.4280 sec)
+Epoch 150 - Loss: 0.9058 - Correct: 50 (Time: 1.6925 sec)
+Epoch 160 - Loss: 0.0601 - Correct: 50 (Time: 1.7672 sec)
+Epoch 170 - Loss: 0.5131 - Correct: 49 (Time: 1.7348 sec)
+Epoch 180 - Loss: 0.3652 - Correct: 50 (Time: 1.7241 sec)
+Epoch 190 - Loss: 0.2033 - Correct: 50 (Time: 1.8418 sec)
+Epoch 200 - Loss: 0.5112 - Correct: 49 (Time: 1.6776 sec)
+Epoch 210 - Loss: 0.3305 - Correct: 49 (Time: 1.7036 sec)
+Epoch 220 - Loss: 0.1937 - Correct: 50 (Time: 1.6434 sec)
+Epoch 230 - Loss: 0.6127 - Correct: 50 (Time: 2.3069 sec)
+Epoch 240 - Loss: 0.5985 - Correct: 49 (Time: 1.7015 sec)
+Epoch 250 - Loss: 1.3126 - Correct: 49 (Time: 2.0478 sec)
+Epoch 260 - Loss: 0.7411 - Correct: 50 (Time: 1.6725 sec)
+Epoch 270 - Loss: 0.9129 - Correct: 49 (Time: 1.6436 sec)
+Epoch 280 - Loss: 0.0792 - Correct: 50 (Time: 1.6948 sec)
+Epoch 290 - Loss: 0.7405 - Correct: 50 (Time: 1.6547 sec)
+Epoch 300 - Loss: 0.0898 - Correct: 49 (Time: 1.8257 sec)
+Epoch 310 - Loss: 0.4340 - Correct: 50 (Time: 1.6988 sec)
+Epoch 320 - Loss: 0.6662 - Correct: 50 (Time: 2.2464 sec)
+Epoch 330 - Loss: 0.1590 - Correct: 49 (Time: 1.6796 sec)
+Epoch 340 - Loss: 0.0435 - Correct: 49 (Time: 1.6288 sec)
+Epoch 350 - Loss: 1.8241 - Correct: 48 (Time: 1.6743 sec)
+Epoch 360 - Loss: 0.1676 - Correct: 50 (Time: 1.6854 sec)
+Epoch 370 - Loss: 0.4107 - Correct: 50 (Time: 1.9674 sec)
+Epoch 380 - Loss: 0.0030 - Correct: 49 (Time: 1.6640 sec)
+Epoch 390 - Loss: 0.3096 - Correct: 49 (Time: 2.3509 sec)
+Epoch 400 - Loss: 0.5608 - Correct: 50 (Time: 1.6583 sec)
+Epoch 410 - Loss: 0.0054 - Correct: 49 (Time: 2.0823 sec)
+Epoch 420 - Loss: 0.0572 - Correct: 50 (Time: 1.6649 sec)
+Epoch 430 - Loss: 0.9306 - Correct: 49 (Time: 1.7814 sec)
+Epoch 440 - Loss: 0.1001 - Correct: 50 (Time: 1.7261 sec)
+Epoch 450 - Loss: 0.2957 - Correct: 50 (Time: 1.7019 sec)
+Epoch 460 - Loss: 0.9214 - Correct: 49 (Time: 1.7591 sec)
+Epoch 470 - Loss: 0.0469 - Correct: 49 (Time: 1.7853 sec)
+Epoch 480 - Loss: 0.0176 - Correct: 47 (Time: 1.7846 sec)
+Epoch 490 - Loss: 3.0078 - Correct: 44 (Time: 1.8108 sec)
+
 #### backend: cpu, dataset: split, hidden: 100, rate: 0.05, points: 50
-Epoch  0  loss  4.971922824540687 correct 28
-Epoch  10  loss  6.0564156952979005 correct 42
-Epoch  20  loss  6.2151452932622755 correct 46
-Epoch  30  loss  3.8922995653155117 correct 45
-Epoch  40  loss  2.853426070026546 correct 48
-Epoch  50  loss  2.787386525948941 correct 49
-Epoch  60  loss  2.8503217100729565 correct 49
-Epoch  70  loss  2.1806177642382134 correct 48
-Epoch  80  loss  1.5277872492746654 correct 48
-Epoch  90  loss  1.1118199218059854 correct 48
-Epoch  100  loss  1.6343984195341652 correct 49
-Epoch  110  loss  0.8694639826070102 correct 49
-Epoch  120  loss  1.423403185639915 correct 49
-Epoch  130  loss  0.3966510379860659 correct 49
-Epoch  140  loss  2.289824356038101 correct 47
-Epoch  150  loss  0.8619812425685061 correct 49
-Epoch  160  loss  1.7441206190007377 correct 48
-Epoch  170  loss  0.10192051227350583 correct 49
-Epoch  180  loss  0.20293624728870663 correct 50
-Epoch  190  loss  2.184859207875409 correct 41
-Epoch  200  loss  1.0837773396826116 correct 49
-Epoch  210  loss  0.07522108744448314 correct 50
-Epoch  220  loss  1.0957680997923218 correct 47
-Epoch  230  loss  2.744788786015795 correct 46
-Epoch  240  loss  1.9980614369817415 correct 44
-Epoch  250  loss  0.10904054742112854 correct 47
-Epoch  260  loss  0.07411200342729603 correct 48
-Epoch  270  loss  0.18399808269166162 correct 49
-Epoch  280  loss  10.735761309743857 correct 48
-Epoch  290  loss  1.0577077983266059 correct 48
-Epoch  300  loss  6.5349832641800045 correct 36
-Epoch  310  loss  2.385245209408473 correct 46
-Epoch  320  loss  7.1750004297789305 correct 50
-Epoch  330  loss  0.03039497198791717 correct 49
-Epoch  340  loss  0.0006058621979469252 correct 50
-Epoch  350  loss  0.8725645642956861 correct 49
-Epoch  360  loss  0.0763341984295766 correct 46
-Epoch  370  loss  13.270051408309765 correct 42
-Epoch  380  loss  0.014527930138848209 correct 49
-Epoch  390  loss  0.014925620580594526 correct 49
-Epoch  400  loss  0.01895042071009921 correct 50
-Epoch  410  loss  0.020942705557715085 correct 47
-Epoch  420  loss  0.0032875822639205792 correct 49
-Epoch  430  loss  0.1655377367102712 correct 50
-Epoch  440  loss  1.4672243091437345 correct 47
-Epoch  450  loss  0.0008488555840592742 correct 45
-Epoch  460  loss  0.02176308153008666 correct 49
-Epoch  470  loss  0.26799589932555834 correct 51
-Epoch  480  loss  0.0008243049223472969 correct 45
-Epoch  490  loss  0.0022972039051135946 correct 49
+
+#### backend: gpu, dataset: split, hidden: 100, rate: 0.05, points: 50
+Epoch 0 - Loss: 10.1155 - Correct: 27 (Time: 4.3180 sec)
+Epoch 10 - Loss: 5.0328 - Correct: 34 (Time: 1.5613 sec)
+Epoch 20 - Loss: 3.8913 - Correct: 44 (Time: 1.5131 sec)
+Epoch 30 - Loss: 3.2678 - Correct: 46 (Time: 1.8069 sec)
+Epoch 40 - Loss: 2.8235 - Correct: 49 (Time: 1.5321 sec)
+Epoch 50 - Loss: 3.1438 - Correct: 49 (Time: 1.6575 sec)
+Epoch 60 - Loss: 2.1609 - Correct: 49 (Time: 2.1573 sec)
+Epoch 70 - Loss: 1.7774 - Correct: 49 (Time: 1.5351 sec)
+Epoch 80 - Loss: 2.0819 - Correct: 49 (Time: 1.4984 sec)
+Epoch 90 - Loss: 1.1129 - Correct: 49 (Time: 1.7493 sec)
+Epoch 100 - Loss: 1.6338 - Correct: 49 (Time: 1.5028 sec)
+Epoch 110 - Loss: 1.3648 - Correct: 49 (Time: 1.4934 sec)
+Epoch 120 - Loss: 1.5403 - Correct: 49 (Time: 1.5318 sec)
+Epoch 130 - Loss: 1.1812 - Correct: 49 (Time: 1.4895 sec)
+Epoch 140 - Loss: 1.0280 - Correct: 49 (Time: 1.4953 sec)
+Epoch 150 - Loss: 1.5833 - Correct: 48 (Time: 1.5303 sec)
+Epoch 160 - Loss: 0.8484 - Correct: 49 (Time: 1.6153 sec)
+Epoch 170 - Loss: 1.0645 - Correct: 50 (Time: 1.5145 sec)
+Epoch 180 - Loss: 0.7695 - Correct: 49 (Time: 1.5042 sec)
+Epoch 190 - Loss: 1.1598 - Correct: 49 (Time: 2.0281 sec)
+Epoch 200 - Loss: 0.2254 - Correct: 50 (Time: 1.4901 sec)
+Epoch 210 - Loss: 0.5376 - Correct: 49 (Time: 1.5118 sec)
+Epoch 220 - Loss: 0.5668 - Correct: 50 (Time: 2.2466 sec)
+Epoch 230 - Loss: 1.6813 - Correct: 48 (Time: 1.4903 sec)
+Epoch 240 - Loss: 0.9442 - Correct: 49 (Time: 1.4960 sec)
+Epoch 250 - Loss: 0.3449 - Correct: 49 (Time: 2.1775 sec)
+Epoch 260 - Loss: 3.6333 - Correct: 46 (Time: 1.4729 sec)
+Epoch 270 - Loss: 0.5076 - Correct: 49 (Time: 1.4961 sec)
+Epoch 280 - Loss: 0.1608 - Correct: 49 (Time: 1.8078 sec)
+Epoch 290 - Loss: 0.2072 - Correct: 48 (Time: 1.5077 sec)
+Epoch 300 - Loss: 1.8193 - Correct: 48 (Time: 1.4908 sec)
+Epoch 310 - Loss: 0.1164 - Correct: 49 (Time: 1.5493 sec)
+Epoch 320 - Loss: 0.0107 - Correct: 50 (Time: 1.5260 sec)
+Epoch 330 - Loss: 1.4362 - Correct: 49 (Time: 1.4907 sec)
+Epoch 340 - Loss: 0.0467 - Correct: 49 (Time: 1.5103 sec)
+Epoch 350 - Loss: 0.0360 - Correct: 50 (Time: 1.7693 sec)
+Epoch 360 - Loss: 0.0617 - Correct: 48 (Time: 1.4939 sec)
+Epoch 370 - Loss: 3.8804 - Correct: 50 (Time: 1.5444 sec)
+Epoch 380 - Loss: 0.0088 - Correct: 49 (Time: 2.1428 sec)
+Epoch 390 - Loss: 0.0068 - Correct: 50 (Time: 1.4962 sec)
+Epoch 400 - Loss: 0.8441 - Correct: 51 (Time: 1.4759 sec)
+Epoch 410 - Loss: 0.0114 - Correct: 49 (Time: 2.1953 sec)
+Epoch 420 - Loss: 5.1270 - Correct: 50 (Time: 1.5218 sec)
+Epoch 430 - Loss: 23.7759 - Correct: 35 (Time: 1.5753 sec)
+Epoch 440 - Loss: 0.0098 - Correct: 50 (Time: 1.8752 sec)
+Epoch 450 - Loss: 0.0443 - Correct: 50 (Time: 1.5045 sec)
+Epoch 460 - Loss: 1.5786 - Correct: 49 (Time: 1.5516 sec)
+Epoch 470 - Loss: 0.0228 - Correct: 50 (Time: 1.5197 sec)
+Epoch 480 - Loss: 5.0566 - Correct: 51 (Time: 1.5302 sec)
+Epoch 490 - Loss: 1.9785 - Correct: 49 (Time: 1.5400 sec)
+
+#### backend: cpu, dataset: xor, hidden: 100, rate: 0.05, points: 50
+
+#### backend: gpu, dataset: xor, hidden: 100, rate: 0.05, points: 50
+Epoch 0 - Loss: 7.1691 - Correct: 36 (Time: 3.8484 sec)
+Epoch 10 - Loss: 4.4156 - Correct: 40 (Time: 1.4688 sec)
+Epoch 20 - Loss: 5.0905 - Correct: 45 (Time: 1.7072 sec)
+Epoch 30 - Loss: 2.8962 - Correct: 46 (Time: 1.4989 sec)
+Epoch 40 - Loss: 4.9008 - Correct: 48 (Time: 1.5466 sec)
+Epoch 50 - Loss: 1.9716 - Correct: 48 (Time: 1.5349 sec)
+Epoch 60 - Loss: 4.1635 - Correct: 44 (Time: 1.6075 sec)
+Epoch 70 - Loss: 1.1531 - Correct: 47 (Time: 1.5108 sec)
+Epoch 80 - Loss: 1.1185 - Correct: 48 (Time: 1.5235 sec)
+Epoch 90 - Loss: 1.5990 - Correct: 47 (Time: 1.9609 sec)
+Epoch 100 - Loss: 1.2769 - Correct: 48 (Time: 1.4939 sec)
+Epoch 110 - Loss: 2.9671 - Correct: 44 (Time: 1.4825 sec)
+Epoch 120 - Loss: 2.1780 - Correct: 47 (Time: 2.3081 sec)
+Epoch 130 - Loss: 1.1222 - Correct: 47 (Time: 1.4888 sec)
+Epoch 140 - Loss: 0.4977 - Correct: 48 (Time: 1.5001 sec)
+Epoch 150 - Loss: 0.4117 - Correct: 48 (Time: 1.8101 sec)
+Epoch 160 - Loss: 0.4303 - Correct: 47 (Time: 1.4728 sec)
+Epoch 170 - Loss: 0.5138 - Correct: 47 (Time: 1.4911 sec)
+Epoch 180 - Loss: 1.9196 - Correct: 48 (Time: 1.4891 sec)
+Epoch 190 - Loss: 1.5459 - Correct: 47 (Time: 1.5960 sec)
+Epoch 200 - Loss: 1.7399 - Correct: 48 (Time: 1.4820 sec)
+Epoch 210 - Loss: 0.3983 - Correct: 48 (Time: 1.4807 sec)
+Epoch 220 - Loss: 0.5014 - Correct: 47 (Time: 1.7850 sec)
+Epoch 230 - Loss: 2.1887 - Correct: 49 (Time: 1.4939 sec)
+Epoch 240 - Loss: 0.6370 - Correct: 47 (Time: 1.4782 sec)
+Epoch 250 - Loss: 0.1505 - Correct: 47 (Time: 2.2160 sec)
+Epoch 260 - Loss: 0.9360 - Correct: 49 (Time: 1.4907 sec)
+Epoch 270 - Loss: 0.3371 - Correct: 47 (Time: 1.5075 sec)
+Epoch 280 - Loss: 0.2039 - Correct: 49 (Time: 2.1779 sec)
+Epoch 290 - Loss: 1.1787 - Correct: 48 (Time: 1.5031 sec)
+Epoch 300 - Loss: 0.1001 - Correct: 49 (Time: 1.5227 sec)
+Epoch 310 - Loss: 0.2099 - Correct: 47 (Time: 1.8233 sec)
+Epoch 320 - Loss: 2.0688 - Correct: 46 (Time: 1.4854 sec)
+Epoch 330 - Loss: 1.0324 - Correct: 48 (Time: 1.4955 sec)
+Epoch 340 - Loss: 0.5588 - Correct: 47 (Time: 1.4761 sec)
+Epoch 350 - Loss: 0.3219 - Correct: 49 (Time: 1.4941 sec)
+Epoch 360 - Loss: 0.6831 - Correct: 49 (Time: 1.4988 sec)
+Epoch 370 - Loss: 0.2463 - Correct: 49 (Time: 1.5896 sec)
+Epoch 380 - Loss: 1.1712 - Correct: 47 (Time: 1.8673 sec)
+Epoch 390 - Loss: 0.4266 - Correct: 49 (Time: 1.5800 sec)
+Epoch 400 - Loss: 4.5635 - Correct: 46 (Time: 1.5310 sec)
+Epoch 410 - Loss: 0.5039 - Correct: 49 (Time: 1.8076 sec)
+Epoch 420 - Loss: 0.7967 - Correct: 48 (Time: 1.6694 sec)
+Epoch 430 - Loss: 0.4418 - Correct: 49 (Time: 2.3089 sec)
+Epoch 440 - Loss: 6.0379 - Correct: 38 (Time: 1.6733 sec)
+Epoch 450 - Loss: 0.5068 - Correct: 49 (Time: 1.6584 sec)
+Epoch 460 - Loss: 0.1385 - Correct: 49 (Time: 1.6573 sec)
+Epoch 470 - Loss: 0.4376 - Correct: 47 (Time: 1.6009 sec)
+Epoch 480 - Loss: 5.6805 - Correct: 41 (Time: 2.2828 sec)
+Epoch 490 - Loss: 0.5430 - Correct: 48 (Time: 1.7221 sec)
+
+### Larger models
+#### backend: gpu, dataset: simple, hidden: 250, rate: 0.05, points: 50
