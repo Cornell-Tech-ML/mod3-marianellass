@@ -11,7 +11,7 @@ if numba.cuda.is_available():
 
 
 def default_log_fn(epoch, total_loss, correct, losses, epoch_time):
-    print(f"Epoch {epoch} _ Loss: {total_loss:.4f} _ Correct: {correct} (Time: {epoch_time:.4f} sec)")
+    print(f"Epoch {epoch} - Loss: {total_loss:.4f} - Correct: {correct} (Time: {epoch_time:.4f} sec)")
 
 
 def RParam(*shape, backend):
