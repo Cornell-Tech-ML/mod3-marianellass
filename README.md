@@ -322,7 +322,8 @@ Parallel structure is already optimal.
 ---------------------------Loop invariant code motion---------------------------
 Allocation hoisting:
 No allocation hoisting found
-None ```
+None
+```
 
 ### 3.4: Timing Summary 
 Timing summary
@@ -342,9 +343,8 @@ Size: 1024
     fast: 8.22626
     gpu: 0.97320
 
-
-```Graph: 
-<img src="gpu_cpu_graph.png" width="60%"> ```
+Graph: 
+<img src="gpu_cpu_graph.png" width="60%">
 
 ### 3.5: Training loss, accuracy and timing
 
