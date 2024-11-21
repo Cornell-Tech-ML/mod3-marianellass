@@ -36,14 +36,14 @@ if __name__ == "__main__":
             end_fast = time.time()
 
             start_gpu = time.time()
-            #run_matmul(GPUBackend, size)
+            run_matmul(GPUBackend, size)
             end_gpu = time.time()
 
             fast_time = end_fast - start_fast
             gpu_time = end_gpu - start_gpu
 
             fast_times.append(fast_time)
-            #gpu_times.append(gpu_time)
+            gpu_times.append(gpu_time)
 
         times[size]["fast"] = np.mean(fast_times)
         times[size]["gpu"] = np.mean(gpu_times)
