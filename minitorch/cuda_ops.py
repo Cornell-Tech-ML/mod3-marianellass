@@ -174,7 +174,7 @@ def tensor_map(
         out_index = cuda.local.array(MAX_DIMS, numba.int32)
         in_index = cuda.local.array(MAX_DIMS, numba.int32)
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
-        
+
         if i < out_size:
             to_index(i, out_shape, out_index)
             broadcast_index(out_index, out_shape, in_shape, in_index)
@@ -221,13 +221,15 @@ def tensor_zip(
         b_index = cuda.local.array(MAX_DIMS, numba.int32)
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
 
+
         if i < out_size:
             to_index(i, out_shape, out_index)
             broadcast_index(out_index, out_shape, a_shape, a_index)
             broadcast_index(out_index, out_shape, b_shape, b_index)
             a_pos = index_to_position(a_index, a_strides)
             b_pos = index_to_position(b_index, b_strides)
-            out[i] = fn(a_storage[a_pos], b_storage[b_pos])
+            out_pos = index_to_position(out_index, out_strides)
+            out[out_pos] = fn(a_storage[a_pos], b_storage[b_pos])
 
     return cuda.jit()(_zip)  # type: ignore
 
@@ -263,16 +265,16 @@ def _sum_practice(out: Storage, a: Storage, size: int) -> None:
         cache[pos] = a[i]
     else:
         cache[pos] = 0.0
-    
-    t = 1
+
     cuda.syncthreads()
-    while t < BLOCK_DIM:
-        if pos % (2 * t) == 0:
-            cache[pos] += cache[pos + t]
-        t *= 2
-        cuda.syncthreads()
-    if pos == 0:
-        out[cuda.blockIdx.x] = cache[0]
+
+    if i < size:
+        for j in [1, 2, 4, 8, 16]:
+            if pos % (j * 2) == 0:
+                cache[pos] += cache[pos + j]
+                cuda.syncthreads()
+        if pos == 0:
+            out[cuda.blockIdx.x] = cache[0]
 
 
 jit_sum_practice = cuda.jit()(_sum_practice)
@@ -325,13 +327,13 @@ def tensor_reduce(
         if out_pos < out_size:
             to_index(out_pos, out_shape, out_index)
             out_index[reduce_dim] = pos
-            
+
             if pos < a_shape[reduce_dim]:
                 a_pos = index_to_position(out_index, a_strides)
                 cache[pos] = a_storage[a_pos]
                 cuda.syncthreads()
 
-                t = 1 
+                t = 1
                 while t < BLOCK_DIM: #reduction in shared memory
                     if pos % (2 * t) == 0 and pos + t < BLOCK_DIM:
                         cache[pos] = fn(cache[pos], cache[pos + t])
@@ -379,15 +381,15 @@ def _mm_practice(out: Storage, a: Storage, b: Storage, size: int) -> None:
     BLOCK_DIM = 32
     cache_a = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
     cache_b = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
-    
+
     x = cuda.threadIdx.x
     y = cuda.threadIdx.y
-    
+
     if x < size and y < size:
         cache_a[x, y] = a[x * size + y]
         cache_b[x, y] = b[x * size + y]
     cuda.syncthreads()
-    
+
     if x < size and y < size:
         for i in range(size):
             out[x * size + y] += cache_a[x, i] * cache_b[i, y]
@@ -467,24 +469,24 @@ def _tensor_matrix_multiply(
         #Move data from global memory into shared memory for a and b.
         if i < a_shape[-2] and (pos + pj) < a_shape[-1]:
             a_shared[pi, pj] = a_storage[
-                (batch * a_batch_stride)  #  aBatch 
-                + (i * a_strides[-2])  # aRow 
+                (batch * a_batch_stride)  #  aBatch
+                + (i * a_strides[-2])  # aRow
                 + (pos + pj) * a_strides[-1]]  # aCol
         else:
             a_shared[pi, pj] = 0.0
 
         if (pos + pi) < b_shape[-2] and j < b_shape[-1]:
             b_shared[pi, pj] = b_storage[
-                (batch * b_batch_stride)  # bBatch 
-                + (pos + pi) * b_strides[-2]  # bRow 
-                + j * b_strides[-1]]  # bCol 
+                (batch * b_batch_stride)  # bBatch
+                + (pos + pi) * b_strides[-2]  # bRow
+                + j * b_strides[-1]]  # bCol
         else:
             b_shared[pi, pj] = 0.0
 
         cuda.syncthreads()
 
         # Compute partial dot product for this block
-        
+
         if i < a_shape[-2] and j < b_shape[-1]:
             for x in range(min(BLOCK_DIM, a_shape[-1] - pos)):
                 temp += a_shared[pi, x] * b_shared[x, pj]
