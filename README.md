@@ -327,15 +327,15 @@ None
 
 ### 3.4: Timing Summary 
 Timing summary
-Size: 64
-    fast: 0.00352
-    gpu: 0.00639
-Size: 128
-    fast: 0.01608
-    gpu: 0.01463
-Size: 256
-    fast: 0.09828
-    gpu: 0.05335
+- Size: 64
+    - fast: 0.00352
+    - gpu: 0.00639
+- Size: 128
+    - fast: 0.01608
+    - gpu: 0.01463
+- Size: 256
+    - fast: 0.09828
+    - gpu: 0.05335
 Size: 512
     fast: 1.00572
     gpu: 0.22285

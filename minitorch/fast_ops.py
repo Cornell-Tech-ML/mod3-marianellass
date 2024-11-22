@@ -181,7 +181,7 @@ def tensor_map(
                 to_index(i, out_shape, out_index)
                 broadcast_index(out_index, out_shape, in_shape, in_index)
                 ii = index_to_position(out_index, out_strides)
-                
+
                 j = int(index_to_position(in_index, in_strides))
                 out[ii] = fn(in_storage[j])
 
@@ -246,7 +246,7 @@ def tensor_zip(
                     a_storage[index_to_position(a_index, a_strides)],
                     b_storage[index_to_position(b_index, b_strides)],
                 )
-                               
+
     return njit(_zip, parallel=True)  # type: ignore
 
 
@@ -280,23 +280,22 @@ def tensor_reduce(
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
-        
         reduce_size = a_shape[reduce_dim]
-        #reduce_stride = a_strides[reduce_dim]
-        
+        # reduce_stride = a_strides[reduce_dim]
+
         for i in prange(len(out)):
             out_idx = np.empty(MAX_DIMS, np.int32)
-            
+
             to_index(i, out_shape, out_idx)
             out_position = index_to_position(out_idx, out_strides)
-            temp= out[out_position]
+            temp = out[out_position]
 
             for s in range(reduce_size):
                 j = 0
                 out_idx[reduce_dim] = s
-                
+
                 for x, stride in zip(out_idx, a_strides):
-                    j += x*stride
+                    j += x * stride
                 temp = fn(temp, a_storage[j])
             out[out_position] = temp
 
@@ -348,24 +347,20 @@ def _tensor_matrix_multiply(
     """
     a_batch_stride = a_strides[0] if a_shape[0] > 1 else 0
     b_batch_stride = b_strides[0] if b_shape[0] > 1 else 0
-    
-    for n in prange(out_shape[0]): #loop through batch
+
+    for n in prange(out_shape[0]):  # loop through batch
         for i in range(out_shape[1]):
             for j in range(out_shape[2]):
-                
                 row = n * a_batch_stride + i * a_strides[1]
                 col = n * b_batch_stride + j * b_strides[2]
                 info = 0.0
-                
+
                 for _ in range(a_shape[-1]):
                     info += a_storage[row] * b_storage[col]
                     row += a_strides[2]
                     col += b_strides[1]
 
-                out[n * out_strides[0] +
-                    i * out_strides[1] +
-                    j * out_strides[2]] = info
-
+                out[n * out_strides[0] + i * out_strides[1] + j * out_strides[2]] = info
 
 
 tensor_matrix_multiply = njit(_tensor_matrix_multiply, parallel=True)

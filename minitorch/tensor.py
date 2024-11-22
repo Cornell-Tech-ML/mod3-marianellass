@@ -94,17 +94,16 @@ class Tensor:
 
         self.f = backend
 
-
     @property
     def size(self) -> int:
         """Returns the size of the tensor."""
         return self._tensor.size
-    
+
     @property
     def dims(self) -> int:
         """Returns the dimensionality of the tensor."""
         return self._tensor.dims
-    
+
     def requires_grad_(self, x: bool) -> None:
         self.history = History()
 
