@@ -486,16 +486,16 @@ def _tensor_matrix_multiply(
         cuda.syncthreads()
 
         # Compute partial dot product for this block
+        for k in range(BLOCK_DIM):
+            if (pos + k) < a_shape[2]:
+                temp += a_shared[pi, k] * b_shared[k, pj]
 
-        if i < a_shape[-2] and j < b_shape[-1]:
-            for x in range(min(BLOCK_DIM, a_shape[-1] - pos)):
-                temp += a_shared[pi, x] * b_shared[x, pj]
-
+        # sync
         cuda.syncthreads()
 
-    # Only write to global memory one time per kernel.
-    if i < a_shape[-2] and j < b_shape[-1]:
-        out[batch * out_strides[0] + i * out_strides[1] + j * out_strides[2]] = temp
+    # write to global
+    if i < out_shape[1] and j < out_shape[2]:
+        out[out_strides[0] * batch + out_strides[1] * i + out_strides[2] * j] = temp
 
 
 

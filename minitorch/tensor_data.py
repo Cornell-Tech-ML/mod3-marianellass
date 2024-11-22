@@ -49,7 +49,7 @@ def index_to_position(index: Index, strides: Strides) -> int:
     position = 0
     for idx, stride in zip(index, strides):
         position += idx * stride
-    return position
+    return int(position)
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
